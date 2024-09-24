@@ -112,6 +112,24 @@ else
     echo "Symlink existiert bereits: $LINK_TARGET"
 fi
 
+# Aktualisiere Ports
+rm /etc/apache2/ports.conf
+echo "Listen 127.0.0.1:8080" | tee /etc/apache2/ports.conf
+
+# SSL
+certbot certonly --webroot -w /var/www/certbot -d "unisuite.de" --non-interactive --agree-tos --email lukaspoggemann@gmail.com
+certbot certonly --webroot -w /var/www/certbot -d "www.unisuite.de" --non-interactive --agree-tos --email lukaspoggemann@gmail.com
+certbot certonly --webroot -w /var/www/certbot -d "api.unisuite.de" --non-interactive --agree-tos --email lukaspoggemann@gmail.com
+certbot certonly --webroot -w /var/www/certbot -d "app.unisuite.de" --non-interactive --agree-tos --email lukaspoggemann@gmail.com
+certbot certonly --webroot -w /var/www/certbot -d "auth.unisuite.de" --non-interactive --agree-tos --email lukaspoggemann@gmail.com
+certbot certonly --webroot -w /var/www/certbot -d "community.unisuite.de" --non-interactive --agree-tos --email lukaspoggemann@gmail.com
+certbot certonly --webroot -w /var/www/certbot -d "developer.unisuite.de" --non-interactive --agree-tos --email lukaspoggemann@gmail.com
+certbot certonly --webroot -w /var/www/certbot -d "docs.unisuite.de" --non-interactive --agree-tos --email lukaspoggemann@gmail.com
+certbot certonly --webroot -w /var/www/certbot -d "help.unisuite.de" --non-interactive --agree-tos --email lukaspoggemann@gmail.com
+certbot certonly --webroot -w /var/www/certbot -d "jobs.unisuite.de" --non-interactive --agree-tos --email lukaspoggemann@gmail.com
+certbot certonly --webroot -w /var/www/certbot -d "status.unisuite.de" --non-interactive --agree-tos --email lukaspoggemann@gmail.com
+echo "0 3 * * * /usr/bin/certbot renew --quiet --post-hook 'systemctl reload nginx'" | crontab -
+
 FILE="/etc/nginx/sites-enabled/default"
 
 # Überprüfen, ob die Datei existiert
@@ -121,10 +139,6 @@ if [ -f "$FILE" ]; then
 else
     echo "Datei existiert nicht: $FILE"
 fi
-
-# Aktualisiere Ports
-rm /etc/apache2/ports.conf
-echo "Listen 127.0.0.1:8080" | tee /etc/apache2/ports.conf
 
 # NGINX neu starten
 if systemctl is-active --quiet nginx; then
@@ -143,24 +157,6 @@ else
   echo "Apache2 ist nicht aktiv, starte Apache2..."
   systemctl start apache2
 fi
-
-# SSL
-certbot certonly --webroot -w /var/www/certbot -d "unisuite.de" --non-interactive --agree-tos --email lukaspoggemann@gmail.com
-certbot certonly --webroot -w /var/www/certbot -d "www.unisuite.de" --non-interactive --agree-tos --email lukaspoggemann@gmail.com
-certbot certonly --webroot -w /var/www/certbot -d "api.unisuite.de" --non-interactive --agree-tos --email lukaspoggemann@gmail.com
-certbot certonly --webroot -w /var/www/certbot -d "app.unisuite.de" --non-interactive --agree-tos --email lukaspoggemann@gmail.com
-certbot certonly --webroot -w /var/www/certbot -d "auth.unisuite.de" --non-interactive --agree-tos --email lukaspoggemann@gmail.com
-certbot certonly --webroot -w /var/www/certbot -d "community.unisuite.de" --non-interactive --agree-tos --email lukaspoggemann@gmail.com
-certbot certonly --webroot -w /var/www/certbot -d "developer.unisuite.de" --non-interactive --agree-tos --email lukaspoggemann@gmail.com
-certbot certonly --webroot -w /var/www/certbot -d "docs.unisuite.de" --non-interactive --agree-tos --email lukaspoggemann@gmail.com
-certbot certonly --webroot -w /var/www/certbot -d "help.unisuite.de" --non-interactive --agree-tos --email lukaspoggemann@gmail.com
-certbot certonly --webroot -w /var/www/certbot -d "jobs.unisuite.de" --non-interactive --agree-tos --email lukaspoggemann@gmail.com
-certbot certonly --webroot -w /var/www/certbot -d "status.unisuite.de" --non-interactive --agree-tos --email lukaspoggemann@gmail.com
-echo "0 3 * * * /usr/bin/certbot renew --quiet --post-hook 'systemctl reload nginx'" | crontab -
-
-# Restart twice
-systemctl restart nginx
-systemctl restart apache2
 
 # System Services laden
 systemctl daemon-reload
