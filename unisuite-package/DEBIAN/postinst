@@ -1,0 +1,140 @@
+#!/bin/bash
+set -e
+
+# Überprüfe ob NodeJS installiert ist
+if ! dpkg -l | grep -q nodejs; then
+  echo "NodeJS ist nicht installiert"
+  exit 1
+else
+  echo "NodeJS ist bereits installiert."
+fi
+
+# Überprüfe ob NPM installiert ist
+if ! dpkg -l | grep -q npm; then
+  echo "NPM ist nicht installiert"
+  exit 1
+else
+  echo "NPM ist bereits installiert."
+fi
+
+# Überprüfe ob Nginx installiert ist
+if ! dpkg -l | grep -q nginx; then
+  echo "Nginx ist nicht installiert"
+  exit 1
+else
+  echo "Nginx ist bereits installiert."
+fi
+
+# Überprüfe ob Apache2 installiert ist
+if ! dpkg -l | grep -q apache2; then
+  echo "Apache2 ist nicht installiert"
+  exit 1
+else
+  echo "Apache2 ist bereits installiert."
+fi
+
+# Überprüfe ob UFW installiert ist
+if ! dpkg -l | grep -q ufw; then
+  echo "UFW ist nicht installiert"
+  exit 1
+else
+  echo "UFW ist bereits installiert."
+fi
+
+# Überprüfe ob Certbot installiert ist
+if ! dpkg -l | grep -q certbot; then
+  echo "CertBot ist nicht installiert"
+  exit 1
+else
+  echo "CertBot ist bereits installiert."
+fi
+
+# Permissions
+chown -R www-data:www-data /var/www/unisuite
+chmod -R 755 /var/www/unisuite
+chown -R www-data:www-data /var/unisuite-api
+
+# Aktivieren der notwendigen Apache-Module
+echo "Aktiviere Apache-Module..."
+a2enmod ssl
+a2enmod rewrite
+a2enmod headers
+a2enmod deflate
+
+# Aktivieren der 000-default.conf Site und Deaktivieren der default-ssl.conf Site
+echo "Aktiviere/Deaktiviere Sites..."
+a2dissite default-ssl.conf
+a2dissite 000-default.conf
+a2ensite unisuite.conf
+
+LINK_TARGET="/etc/nginx/sites-enabled/unisuite"
+SOURCE="/etc/nginx/sites-available/unisuite"
+
+# Überprüfen, ob der Symlink bereits existiert
+if [ ! -L "$LINK_TARGET" ]; then
+    ln -s "$SOURCE" "$LINK_TARGET"
+    echo "Symlink wurde erstellt: $LINK_TARGET -> $SOURCE"
+else
+    echo "Symlink existiert bereits: $LINK_TARGET"
+fi
+
+FILE="/etc/nginx/sites-enabled/default"
+
+# Überprüfen, ob die Datei existiert
+if [ -f "$FILE" ]; then
+    rm "$FILE"
+    echo "Datei entfernt: $FILE"
+else
+    echo "Datei existiert nicht: $FILE"
+fi
+
+# Aktualisiere Ports
+rm /etc/apache2/ports.conf
+echo "Listen 127.0.0.1:8080" | tee /etc/apache2/ports.conf
+
+# SSL
+certbot certonly --webroot -w /var/www/unisuite/landing -d "unisuite.de" --non-interactive --agree-tos --email lukaspoggemann@gmail.com
+certbot certonly --webroot -w /var/www/unisuite/landing -d "www.unisuite.de" --non-interactive --agree-tos --email lukaspoggemann@gmail.com
+certbot certonly --webroot -w /var/www/unisuite/landing -d "api.unisuite.de" --non-interactive --agree-tos --email lukaspoggemann@gmail.com
+certbot certonly --webroot -w /var/www/unisuite/app -d "app.unisuite.de" --non-interactive --agree-tos --email lukaspoggemann@gmail.com
+certbot certonly --webroot -w /var/www/unisuite/auth -d "auth.unisuite.de" --non-interactive --agree-tos --email lukaspoggemann@gmail.com
+certbot certonly --webroot -w /var/www/unisuite/community -d "community.unisuite.de" --non-interactive --agree-tos --email lukaspoggemann@gmail.com
+certbot certonly --webroot -w /var/www/unisuite/developer -d "developer.unisuite.de" --non-interactive --agree-tos --email lukaspoggemann@gmail.com
+certbot certonly --webroot -w /var/www/unisuite/docs -d "docs.unisuite.de" --non-interactive --agree-tos --email lukaspoggemann@gmail.com
+certbot certonly --webroot -w /var/www/unisuite/help -d "help.unisuite.de" --non-interactive --agree-tos --email lukaspoggemann@gmail.com
+certbot certonly --webroot -w /var/www/unisuite/jobs -d "jobs.unisuite.de" --non-interactive --agree-tos --email lukaspoggemann@gmail.com
+certbot certonly --webroot -w /var/www/unisuite/status -d "status.unisuite.de" --non-interactive --agree-tos --email lukaspoggemann@gmail.com
+
+# NGINX neu starten
+if systemctl is-active --quiet nginx; then
+  echo "NGINX wird neu gestartet..."
+  systemctl restart nginx
+else
+  echo "NGINX ist nicht aktiv, starte NGINX..."
+  systemctl start nginx
+fi
+
+# Apache2 neu starten
+if systemctl is-active --quiet apache2; then
+  echo "Apache2 wird neu gestartet..."
+  systemctl restart apache2
+else
+  echo "Apache2 ist nicht aktiv, starte Apache2..."
+  systemctl start apache2
+fi
+
+# System Services laden
+systemctl daemon-reload
+systemctl enable unisuite-api.service
+systemctl start unisuite-api.service
+
+# UFW
+echo "Konfiguriere Firewall..."
+ufw --force enable
+ufw allow 80/tcp
+ufw allow 443/tcp
+ufw allow 1505/tcp
+ufw allow 22/tcp
+ufw allow 21/tcp
+
+echo "Pre-Installation abgeschlossen."

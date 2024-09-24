@@ -1,0 +1,10 @@
+Package: unisuite
+Version: 0.3
+Maintainer: Lukas Poggemann <lukaspoggemann@gmail.com>
+Description: UniSuite Server System
+Section: utilities
+Priority: required
+Essential: yes
+Architecture: all
+Homepage: www.unisuite.de
+Depends: nodejs, npm, nginx, apache2, ufw, certbot

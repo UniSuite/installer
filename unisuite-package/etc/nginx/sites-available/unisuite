@@ -1,0 +1,320 @@
+limit_req_zone $binary_remote_addr zone=default:20m rate=10r/s;
+limit_req_zone $binary_remote_addr zone=restricted:20m rate=5r/s;
+limit_req_status 429;
+
+# UNSECURE
+server {
+    listen 80;
+    server_name unisuite.de *.unisuite.de;
+    server_tokens off;
+    proxy_hide_header X-Powered-By;
+    
+    location / {
+        return 301 https://$host$request_uri;
+    }
+}
+
+# REDIRECT WWWW
+server {
+    listen 443 ssl;
+    server_name unisuite.de;
+    
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_prefer_server_ciphers on;
+    ssl_ecdh_curve secp521r1:secp384r1;
+    ssl_ciphers EECDH+AESGCM:EECDH+AES256;
+    ssl_certificate /etc/letsencrypt/live/unisuite.de/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/unisuite.de/privkey.pem;
+
+    return 301 https://www.unisuite.de$request_uri;
+}
+
+# LANDING
+server {
+    listen 443 ssl;
+    server_name www.unisuite.de;
+    server_tokens off;
+    proxy_hide_header X-Powered-By;
+    
+    limit_req zone=default burst=20;
+    
+    add_header X-Frame-Options SAMEORIGIN;
+    add_header X-Content-Type-Options nosniff;
+    add_header X-XSS-Protection "1; mode=block";
+    
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_prefer_server_ciphers on;
+    ssl_ecdh_curve secp521r1:secp384r1;
+    ssl_ciphers EECDH+AESGCM:EECDH+AES256;
+    ssl_certificate /etc/letsencrypt/live/www.unisuite.de/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/www.unisuite.de/privkey.pem;
+    
+    location / {
+        proxy_pass http://127.0.0.1:8080;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Host $http_host;
+    }
+}
+
+# API    
+server {
+    listen 443 ssl;
+    server_name api.unisuite.de;
+    server_tokens off;
+    proxy_hide_header X-Powered-By;
+    
+    limit_req zone=restricted burst=5;
+    
+    add_header X-Frame-Options SAMEORIGIN;
+    add_header X-Content-Type-Options nosniff;
+    add_header X-XSS-Protection "1; mode=block";
+    
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_prefer_server_ciphers on;
+    ssl_ecdh_curve secp521r1:secp384r1;
+    ssl_ciphers EECDH+AESGCM:EECDH+AES256;
+    ssl_certificate /etc/letsencrypt/live/api.unisuite.de/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/api.unisuite.de/privkey.pem;
+    
+    location / {
+        proxy_pass http://127.0.0.1:1505;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Host $http_host;
+    }
+}
+
+# APP
+server {
+    listen 443 ssl;
+    server_name app.unisuite.de;
+    server_tokens off;
+    proxy_hide_header X-Powered-By;
+    
+    limit_req zone=default burst=20;
+    
+    add_header X-Frame-Options SAMEORIGIN;
+    add_header X-Content-Type-Options nosniff;
+    add_header X-XSS-Protection "1; mode=block";
+    
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_prefer_server_ciphers on;
+    ssl_ecdh_curve secp521r1:secp384r1;
+    ssl_ciphers EECDH+AESGCM:EECDH+AES256;
+    ssl_certificate /etc/letsencrypt/live/app.unisuite.de/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/app.unisuite.de/privkey.pem;
+    
+    location / {
+        proxy_pass http://127.0.0.1:8080;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Host $http_host;
+    }
+}
+
+# AUTH
+server {
+    listen 443 ssl;
+    server_name auth.unisuite.de;
+    server_tokens off;
+    proxy_hide_header X-Powered-By;
+    
+    limit_req zone=default burst=20;
+    
+    add_header X-Frame-Options SAMEORIGIN;
+    add_header X-Content-Type-Options nosniff;
+    add_header X-XSS-Protection "1; mode=block";
+    
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_prefer_server_ciphers on;
+    ssl_ecdh_curve secp521r1:secp384r1;
+    ssl_ciphers EECDH+AESGCM:EECDH+AES256;
+    ssl_certificate /etc/letsencrypt/live/auth.unisuite.de/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/auth.unisuite.de/privkey.pem;
+    
+    location / {
+        proxy_pass http://127.0.0.1:8080;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Host $http_host;
+    }
+}
+
+# COMMUNITY
+server {
+    listen 443 ssl;
+    server_name community.unisuite.de;
+    server_tokens off;
+    proxy_hide_header X-Powered-By;
+    
+    limit_req zone=default burst=20;
+    
+    add_header X-Frame-Options SAMEORIGIN;
+    add_header X-Content-Type-Options nosniff;
+    add_header X-XSS-Protection "1; mode=block";
+    
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_prefer_server_ciphers on;
+    ssl_ecdh_curve secp521r1:secp384r1;
+    ssl_ciphers EECDH+AESGCM:EECDH+AES256;
+    ssl_certificate /etc/letsencrypt/live/community.unisuite.de/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/community.unisuite.de/privkey.pem;
+    
+    location / {
+        proxy_pass http://127.0.0.1:8080;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Host $http_host;
+    }
+}
+
+# DEVELOPER
+server {
+    listen 443 ssl;
+    server_name developer.unisuite.de;
+    server_tokens off;
+    proxy_hide_header X-Powered-By;
+    
+    limit_req zone=default burst=20;
+    
+    add_header X-Frame-Options SAMEORIGIN;
+    add_header X-Content-Type-Options nosniff;
+    add_header X-XSS-Protection "1; mode=block";
+    
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_prefer_server_ciphers on;
+    ssl_ecdh_curve secp521r1:secp384r1;
+    ssl_ciphers EECDH+AESGCM:EECDH+AES256;
+    ssl_certificate /etc/letsencrypt/live/developer.unisuite.de/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/developer.unisuite.de/privkey.pem;
+    
+    location / {
+        proxy_pass http://127.0.0.1:8080;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Host $http_host;
+    }
+}
+
+# DOCS
+server {
+    listen 443 ssl;
+    server_name docs.unisuite.de;
+    server_tokens off;
+    proxy_hide_header X-Powered-By;
+    
+    limit_req zone=default burst=20;
+    
+    add_header X-Frame-Options SAMEORIGIN;
+    add_header X-Content-Type-Options nosniff;
+    add_header X-XSS-Protection "1; mode=block";
+    
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_prefer_server_ciphers on;
+    ssl_ecdh_curve secp521r1:secp384r1;
+    ssl_ciphers EECDH+AESGCM:EECDH+AES256;
+    ssl_certificate /etc/letsencrypt/live/docs.unisuite.de/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/docs.unisuite.de/privkey.pem;
+    
+    location / {
+        proxy_pass http://127.0.0.1:8080;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Host $http_host;
+    }
+}
+
+# HELP
+server {
+    listen 443 ssl;
+    server_name help.unisuite.de;
+    server_tokens off;
+    proxy_hide_header X-Powered-By;
+    
+    limit_req zone=default burst=20;
+    
+    add_header X-Frame-Options SAMEORIGIN;
+    add_header X-Content-Type-Options nosniff;
+    add_header X-XSS-Protection "1; mode=block";
+    
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_prefer_server_ciphers on;
+    ssl_ecdh_curve secp521r1:secp384r1;
+    ssl_ciphers EECDH+AESGCM:EECDH+AES256;
+    ssl_certificate /etc/letsencrypt/live/help.unisuite.de/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/help.unisuite.de/privkey.pem;
+    
+    location / {
+        proxy_pass http://127.0.0.1:8080;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Host $http_host;
+    }
+}
+
+# JOBS
+server {
+    listen 443 ssl;
+    server_name jobs.unisuite.de;
+    server_tokens off;
+    proxy_hide_header X-Powered-By;
+    
+    limit_req zone=default burst=20;
+    
+    add_header X-Frame-Options SAMEORIGIN;
+    add_header X-Content-Type-Options nosniff;
+    add_header X-XSS-Protection "1; mode=block";
+    
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_prefer_server_ciphers on;
+    ssl_ecdh_curve secp521r1:secp384r1;
+    ssl_ciphers EECDH+AESGCM:EECDH+AES256;
+    ssl_certificate /etc/letsencrypt/live/jobs.unisuite.de/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/jobs.unisuite.de/privkey.pem;
+    
+    location / {
+        proxy_pass http://127.0.0.1:8080;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Host $http_host;
+    }
+}
+
+# STATUS
+server {
+    listen 443 ssl;
+    server_name status.unisuite.de;
+    server_tokens off;
+    proxy_hide_header X-Powered-By;
+    
+    limit_req zone=default burst=20;
+    
+    add_header X-Frame-Options SAMEORIGIN;
+    add_header X-Content-Type-Options nosniff;
+    add_header X-XSS-Protection "1; mode=block";
+    
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_prefer_server_ciphers on;
+    ssl_ecdh_curve secp521r1:secp384r1;
+    ssl_ciphers EECDH+AESGCM:EECDH+AES256;
+    ssl_certificate /etc/letsencrypt/live/status.unisuite.de/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/status.unisuite.de/privkey.pem;
+    
+    location / {
+        proxy_pass http://127.0.0.1:8080;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Host $http_host;
+    }
+}
