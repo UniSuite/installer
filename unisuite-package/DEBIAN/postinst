@@ -101,20 +101,27 @@ a2dissite default-ssl.conf
 a2dissite 000-default.conf
 a2ensite unisuite.conf
 
-LINK_TARGET="/etc/nginx/sites-enabled/unisuite"
-SOURCE="/etc/nginx/sites-available/unisuite"
-
-# Überprüfen, ob der Symlink bereits existiert
-if [ ! -L "$LINK_TARGET" ]; then
-    ln -s "$SOURCE" "$LINK_TARGET"
-    echo "Symlink wurde erstellt: $LINK_TARGET -> $SOURCE"
-else
-    echo "Symlink existiert bereits: $LINK_TARGET"
-fi
-
 # Aktualisiere Ports
 rm /etc/apache2/ports.conf
 echo "Listen 127.0.0.1:8080" | tee /etc/apache2/ports.conf
+
+# NGINX neu starten
+if systemctl is-active --quiet nginx; then
+  echo "NGINX wird neu gestartet..."
+  systemctl restart nginx
+else
+  echo "NGINX ist nicht aktiv, starte NGINX..."
+  systemctl start nginx
+fi
+
+# Apache2 neu starten
+if systemctl is-active --quiet apache2; then
+  echo "Apache2 wird neu gestartet..."
+  systemctl restart apache2
+else
+  echo "Apache2 ist nicht aktiv, starte Apache2..."
+  systemctl start apache2
+fi
 
 # SSL
 certbot certonly --webroot -w /var/www/certbot -d "unisuite.de" --non-interactive --agree-tos --email lukaspoggemann@gmail.com
@@ -140,23 +147,20 @@ else
     echo "Datei existiert nicht: $FILE"
 fi
 
-# NGINX neu starten
-if systemctl is-active --quiet nginx; then
-  echo "NGINX wird neu gestartet..."
-  systemctl restart nginx
+LINK_TARGET="/etc/nginx/sites-enabled/unisuite"
+SOURCE="/etc/nginx/sites-available/unisuite"
+
+# Überprüfen, ob der Symlink bereits existiert
+if [ ! -L "$LINK_TARGET" ]; then
+    ln -s "$SOURCE" "$LINK_TARGET"
+    echo "Symlink wurde erstellt: $LINK_TARGET -> $SOURCE"
 else
-  echo "NGINX ist nicht aktiv, starte NGINX..."
-  systemctl start nginx
+    echo "Symlink existiert bereits: $LINK_TARGET"
 fi
 
-# Apache2 neu starten
-if systemctl is-active --quiet apache2; then
-  echo "Apache2 wird neu gestartet..."
-  systemctl restart apache2
-else
-  echo "Apache2 ist nicht aktiv, starte Apache2..."
-  systemctl start apache2
-fi
+# Reload Webservers
+systemctl restart nginx
+systemctl restart apache2
 
 # System Services laden
 systemctl daemon-reload
