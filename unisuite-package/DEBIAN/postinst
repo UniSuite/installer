@@ -131,6 +131,8 @@ systemctl start unisuite-api.service
 # UFW
 echo "Konfiguriere Firewall..."
 ufw --force enable
+ufw default deny incoming
+ufw default allow outgoing
 ufw allow 80/tcp
 ufw allow 443/tcp
 ufw allow 1505/tcp
