@@ -86,8 +86,6 @@ fi
 # Permissions
 chown -R www-data:www-data /var/www/unisuite
 chmod -R 755 /var/www/unisuite
-mkdir -p /var/www/certbot/
-chown -R www-data:www-data /var/www/certbot
 chown -R www-data:www-data /var/unisuite-api
 
 # Aktivieren der notwendigen Apache-Module
@@ -129,17 +127,19 @@ rm /etc/apache2/ports.conf
 echo "Listen 127.0.0.1:8080" | tee /etc/apache2/ports.conf
 
 # SSL
-certbot certonly --webroot -w /var/www/certbot -d "unisuite.de" --non-interactive --agree-tos --email webmaster@unisuite.de
-certbot certonly --webroot -w /var/www/certbot -d "www.unisuite.de" --non-interactive --agree-tos --email webmaster@unisuite.de
-certbot certonly --webroot -w /var/www/certbot -d "api.unisuite.de" --non-interactive --agree-tos --email webmaster@unisuite.de
-certbot certonly --webroot -w /var/www/certbot -d "app.unisuite.de" --non-interactive --agree-tos --email webmaster@unisuite.de
-certbot certonly --webroot -w /var/www/certbot -d "auth.unisuite.de" --non-interactive --agree-tos --email webmaster@unisuite.de
-certbot certonly --webroot -w /var/www/certbot -d "community.unisuite.de" --non-interactive --agree-tos --email webmaster@unisuite.de
-certbot certonly --webroot -w /var/www/certbot -d "developer.unisuite.de" --non-interactive --agree-tos --email webmaster@unisuite.de
-certbot certonly --webroot -w /var/www/certbot -d "docs.unisuite.de" --non-interactive --agree-tos --email webmaster@unisuite.de
-certbot certonly --webroot -w /var/www/certbot -d "help.unisuite.de" --non-interactive --agree-tos --email webmaster@unisuite.de
-certbot certonly --webroot -w /var/www/certbot -d "jobs.unisuite.de" --non-interactive --agree-tos --email webmaster@unisuite.de
-certbot certonly --webroot -w /var/www/certbot -d "status.unisuite.de" --non-interactive --agree-tos --email webmaster@unisuite.de
+certbot --nginx -w /var/www/certbot \
+-d unisuite.de \
+-d www.unisuite.de \
+-d api.unisuite.de \
+-d app.unisuite.de \
+-d auth.unisuite.de \
+-d community.unisuite.de \
+-d developer.unisuite.de \
+-d docs.unisuite.de \
+-d help.unisuite.de \
+-d jobs.unisuite.de \
+-d status.unisuite.de \
+--non-interactive --agree-tos --email webmaster@unisuite.de
 echo "0 3 * * * /usr/bin/certbot renew --quiet --post-hook 'systemctl reload nginx'" | crontab -
 
 # NGINX neu starten
