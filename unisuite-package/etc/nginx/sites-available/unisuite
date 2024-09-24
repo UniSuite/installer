@@ -17,7 +17,7 @@ server {
 
 # REDIRECT WWWW
 server {
-    listen 443 ssl;
+    listen 80;
     server_name unisuite.de;
     include /etc/nginx/snippets/ssl_unisuite.conf;
 
@@ -26,7 +26,7 @@ server {
 
 # LANDING
 server {
-    listen 443 ssl;
+    listen 80;
     server_name www.unisuite.de;
     server_tokens off;
     proxy_hide_header X-Powered-By;
@@ -46,7 +46,7 @@ server {
 
 # API    
 server {
-    listen 443 ssl;
+    listen 80;
     server_name api.unisuite.de;
     server_tokens off;
     proxy_hide_header X-Powered-By;
@@ -65,7 +65,7 @@ server {
 
 # APP
 server {
-    listen 443 ssl;
+    listen 80;
     server_name app.unisuite.de;
     server_tokens off;
     proxy_hide_header X-Powered-By;
@@ -85,7 +85,7 @@ server {
 
 # AUTH
 server {
-    listen 443 ssl;
+    listen 80;
     server_name auth.unisuite.de;
     server_tokens off;
     proxy_hide_header X-Powered-By;
@@ -105,7 +105,7 @@ server {
 
 # COMMUNITY
 server {
-    listen 443 ssl;
+    listen 80;
     server_name community.unisuite.de;
     server_tokens off;
     proxy_hide_header X-Powered-By;
@@ -125,7 +125,7 @@ server {
 
 # DEVELOPER
 server {
-    listen 443 ssl;
+    listen 80;
     server_name developer.unisuite.de;
     server_tokens off;
     proxy_hide_header X-Powered-By;
@@ -145,7 +145,7 @@ server {
 
 # DOCS
 server {
-    listen 443 ssl;
+    listen 80;
     server_name docs.unisuite.de;
     server_tokens off;
     proxy_hide_header X-Powered-By;
@@ -165,7 +165,7 @@ server {
 
 # HELP
 server {
-    listen 443 ssl;
+    listen 80;
     server_name help.unisuite.de;
     server_tokens off;
     proxy_hide_header X-Powered-By;
@@ -186,7 +186,7 @@ server {
 
 # JOBS
 server {
-    listen 443 ssl;
+    listen 80;
     server_name jobs.unisuite.de;
     server_tokens off;
     proxy_hide_header X-Powered-By;
@@ -206,7 +206,7 @@ server {
 
 # STATUS
 server {
-    listen 443 ssl;
+    listen 80;
     server_name status.unisuite.de;
     server_tokens off;
     proxy_hide_header X-Powered-By;
