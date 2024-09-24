@@ -83,9 +83,6 @@ else
   echo "CertBot ist bereits installiert."
 fi
 
-# Entfernen alter Daten
-crontab -r
-
 # Permissions
 chown -R www-data:www-data /var/www/unisuite
 chmod -R 755 /var/www/unisuite
