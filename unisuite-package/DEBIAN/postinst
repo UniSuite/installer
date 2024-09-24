@@ -103,6 +103,20 @@ a2dissite default-ssl.conf
 a2dissite 000-default.conf
 a2ensite unisuite.conf
 
+# SSL
+certbot certonly --webroot -w /var/www/certbot -d "unisuite.de" --non-interactive --agree-tos --email webmaster@unisuite.de
+certbot certonly --webroot -w /var/www/certbot -d "www.unisuite.de" --non-interactive --agree-tos --email webmaster@unisuite.de
+certbot certonly --webroot -w /var/www/certbot -d "api.unisuite.de" --non-interactive --agree-tos --email webmaster@unisuite.de
+certbot certonly --webroot -w /var/www/certbot -d "app.unisuite.de" --non-interactive --agree-tos --email webmaster@unisuite.de
+certbot certonly --webroot -w /var/www/certbot -d "auth.unisuite.de" --non-interactive --agree-tos --email webmaster@unisuite.de
+certbot certonly --webroot -w /var/www/certbot -d "community.unisuite.de" --non-interactive --agree-tos --email webmaster@unisuite.de
+certbot certonly --webroot -w /var/www/certbot -d "developer.unisuite.de" --non-interactive --agree-tos --email webmaster@unisuite.de
+certbot certonly --webroot -w /var/www/certbot -d "docs.unisuite.de" --non-interactive --agree-tos --email webmaster@unisuite.de
+certbot certonly --webroot -w /var/www/certbot -d "help.unisuite.de" --non-interactive --agree-tos --email webmaster@unisuite.de
+certbot certonly --webroot -w /var/www/certbot -d "jobs.unisuite.de" --non-interactive --agree-tos --email webmaster@unisuite.de
+certbot certonly --webroot -w /var/www/certbot -d "status.unisuite.de" --non-interactive --agree-tos --email webmaster@unisuite.de
+echo "0 3 * * * /usr/bin/certbot renew --quiet --post-hook 'systemctl reload nginx'" | crontab -
+
 LINK_TARGET="/etc/nginx/sites-enabled/unisuite"
 SOURCE="/etc/nginx/sites-available/unisuite"
 
@@ -127,20 +141,6 @@ fi
 # Aktualisiere Ports
 rm /etc/apache2/ports.conf
 echo "Listen 127.0.0.1:8080" | tee /etc/apache2/ports.conf
-
-# SSL
-certbot certonly --webroot -w /var/www/certbot -d "unisuite.de" --non-interactive --agree-tos --email webmaster@unisuite.de
-certbot certonly --webroot -w /var/www/certbot -d "www.unisuite.de" --non-interactive --agree-tos --email webmaster@unisuite.de
-certbot certonly --webroot -w /var/www/certbot -d "api.unisuite.de" --non-interactive --agree-tos --email webmaster@unisuite.de
-certbot certonly --webroot -w /var/www/certbot -d "app.unisuite.de" --non-interactive --agree-tos --email webmaster@unisuite.de
-certbot certonly --webroot -w /var/www/certbot -d "auth.unisuite.de" --non-interactive --agree-tos --email webmaster@unisuite.de
-certbot certonly --webroot -w /var/www/certbot -d "community.unisuite.de" --non-interactive --agree-tos --email webmaster@unisuite.de
-certbot certonly --webroot -w /var/www/certbot -d "developer.unisuite.de" --non-interactive --agree-tos --email webmaster@unisuite.de
-certbot certonly --webroot -w /var/www/certbot -d "docs.unisuite.de" --non-interactive --agree-tos --email webmaster@unisuite.de
-certbot certonly --webroot -w /var/www/certbot -d "help.unisuite.de" --non-interactive --agree-tos --email webmaster@unisuite.de
-certbot certonly --webroot -w /var/www/certbot -d "jobs.unisuite.de" --non-interactive --agree-tos --email webmaster@unisuite.de
-certbot certonly --webroot -w /var/www/certbot -d "status.unisuite.de" --non-interactive --agree-tos --email webmaster@unisuite.de
-echo "0 3 * * * /usr/bin/certbot renew --quiet --post-hook 'systemctl reload nginx'" | crontab -
 
 # NGINX neu starten
 if systemctl is-active --quiet nginx; then
