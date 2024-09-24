@@ -8,25 +8,31 @@ server {
     server_name unisuite.de *.unisuite.de;
     server_tokens off;
     proxy_hide_header X-Powered-By;
-
+    
+    location /.well-known/acme-challenge/ {
+        root /var/www/certbot;
+    }
+    
     location / {
         return 301 https://$host$request_uri;
     }
 }
 
-
 # REDIRECT WWWW
 server {
-    listen 80;
+    listen 443 ssl;
     server_name unisuite.de;
+    
     include /etc/nginx/snippets/ssl_unisuite.conf;
+    ssl_certificate /etc/letsencrypt/live/unisuite.de/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/unisuite.de/privkey.pem;
 
     return 301 https://www.unisuite.de$request_uri;
 }
 
 # LANDING
 server {
-    listen 80;
+    listen 443 ssl;
     server_name www.unisuite.de;
     server_tokens off;
     proxy_hide_header X-Powered-By;
@@ -34,6 +40,8 @@ server {
     
     add_header Access-Control-Allow-Origin "https://*.unisuite.de";
     include /etc/nginx/snippets/ssl_unisuite.conf;
+    ssl_certificate /etc/letsencrypt/live/www.unisuite.de/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/www.unisuite.de/privkey.pem;
     
     location / {
         proxy_pass http://127.0.0.1:8080;
@@ -46,13 +54,15 @@ server {
 
 # API    
 server {
-    listen 80;
+    listen 443 ssl;
     server_name api.unisuite.de;
     server_tokens off;
     proxy_hide_header X-Powered-By;
     limit_req zone=restricted burst=5 nodelay;
     
     include /etc/nginx/snippets/ssl_unisuite.conf;
+    ssl_certificate /etc/letsencrypt/live/api.unisuite.de/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/api.unisuite.de/privkey.pem;
     
     location / {
         proxy_pass http://127.0.0.1:1505;
@@ -65,7 +75,7 @@ server {
 
 # APP
 server {
-    listen 80;
+    listen 443 ssl;
     server_name app.unisuite.de;
     server_tokens off;
     proxy_hide_header X-Powered-By;
@@ -73,6 +83,8 @@ server {
     
     add_header Access-Control-Allow-Origin "https://*.unisuite.de";
     include /etc/nginx/snippets/ssl_unisuite.conf;
+    ssl_certificate /etc/letsencrypt/live/app.unisuite.de/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/app.unisuite.de/privkey.pem;
     
     location / {
         proxy_pass http://127.0.0.1:8080;
@@ -85,7 +97,7 @@ server {
 
 # AUTH
 server {
-    listen 80;
+    listen 443 ssl;
     server_name auth.unisuite.de;
     server_tokens off;
     proxy_hide_header X-Powered-By;
@@ -93,6 +105,8 @@ server {
     
     add_header Access-Control-Allow-Origin "https://*.unisuite.de";
     include /etc/nginx/snippets/ssl_unisuite.conf;
+    ssl_certificate /etc/letsencrypt/live/auth.unisuite.de/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/auth.unisuite.de/privkey.pem;
     
     location / {
         proxy_pass http://127.0.0.1:8080;
@@ -105,7 +119,7 @@ server {
 
 # COMMUNITY
 server {
-    listen 80;
+    listen 443 ssl;
     server_name community.unisuite.de;
     server_tokens off;
     proxy_hide_header X-Powered-By;
@@ -113,6 +127,8 @@ server {
     
     add_header Access-Control-Allow-Origin "https://*.unisuite.de";
     include /etc/nginx/snippets/ssl_unisuite.conf;
+    ssl_certificate /etc/letsencrypt/live/community.unisuite.de/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/community.unisuite.de/privkey.pem;
     
     location / {
         proxy_pass http://127.0.0.1:8080;
@@ -125,7 +141,7 @@ server {
 
 # DEVELOPER
 server {
-    listen 80;
+    listen 443 ssl;
     server_name developer.unisuite.de;
     server_tokens off;
     proxy_hide_header X-Powered-By;
@@ -133,6 +149,8 @@ server {
     
     add_header Access-Control-Allow-Origin "https://*.unisuite.de";
     include /etc/nginx/snippets/ssl_unisuite.conf;
+    ssl_certificate /etc/letsencrypt/live/developer.unisuite.de/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/developer.unisuite.de/privkey.pem;
     
     location / {
         proxy_pass http://127.0.0.1:8080;
@@ -145,7 +163,7 @@ server {
 
 # DOCS
 server {
-    listen 80;
+    listen 443 ssl;
     server_name docs.unisuite.de;
     server_tokens off;
     proxy_hide_header X-Powered-By;
@@ -153,6 +171,8 @@ server {
     
     add_header Access-Control-Allow-Origin "https://*.unisuite.de";
     include /etc/nginx/snippets/ssl_unisuite.conf;
+    ssl_certificate /etc/letsencrypt/live/docs.unisuite.de/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/docs.unisuite.de/privkey.pem;
     
     location / {
         proxy_pass http://127.0.0.1:8080;
@@ -165,7 +185,7 @@ server {
 
 # HELP
 server {
-    listen 80;
+    listen 443 ssl;
     server_name help.unisuite.de;
     server_tokens off;
     proxy_hide_header X-Powered-By;
@@ -174,6 +194,8 @@ server {
     add_header Access-Control-Allow-Origin "https://*.unisuite.de";
     
     include /etc/nginx/snippets/ssl_unisuite.conf;
+    ssl_certificate /etc/letsencrypt/live/help.unisuite.de/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/help.unisuite.de/privkey.pem;
     
     location / {
         proxy_pass http://127.0.0.1:8080;
@@ -186,7 +208,7 @@ server {
 
 # JOBS
 server {
-    listen 80;
+    listen 443 ssl;
     server_name jobs.unisuite.de;
     server_tokens off;
     proxy_hide_header X-Powered-By;
@@ -194,6 +216,8 @@ server {
     
     add_header Access-Control-Allow-Origin "https://*.unisuite.de";
     include /etc/nginx/snippets/ssl_unisuite.conf;
+    ssl_certificate /etc/letsencrypt/live/jobs.unisuite.de/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/jobs.unisuite.de/privkey.pem;
     
     location / {
         proxy_pass http://127.0.0.1:8080;
@@ -206,7 +230,7 @@ server {
 
 # STATUS
 server {
-    listen 80;
+    listen 443 ssl;
     server_name status.unisuite.de;
     server_tokens off;
     proxy_hide_header X-Powered-By;
@@ -214,6 +238,8 @@ server {
     
     add_header Access-Control-Allow-Origin "https://*.unisuite.de";
     include /etc/nginx/snippets/ssl_unisuite.conf;
+    ssl_certificate /etc/letsencrypt/live/status.unisuite.de/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/status.unisuite.de/privkey.pem;
     
     location / {
         proxy_pass http://127.0.0.1:8080;
