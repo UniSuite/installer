@@ -2,7 +2,7 @@ limit_req_zone $binary_remote_addr zone=default:20m rate=10r/s;
 limit_req_zone $binary_remote_addr zone=restricted:20m rate=5r/s;
 limit_req_status 429;
 
-# UNSECURE
+# REDIRECT HTTPS
 server {
     listen 80;
     server_name unisuite.de *.unisuite.de;
@@ -19,10 +19,7 @@ server {
     listen 443 ssl;
     server_name unisuite.de;
     
-    ssl_protocols TLSv1.2 TLSv1.3;
-    ssl_prefer_server_ciphers on;
-    ssl_ecdh_curve secp521r1:secp384r1;
-    ssl_ciphers EECDH+AESGCM:EECDH+AES256;
+    include /etc/nginx/snippets/ssl_unisuite.conf;
     ssl_certificate /etc/letsencrypt/live/unisuite.de/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/unisuite.de/privkey.pem;
 
@@ -35,17 +32,10 @@ server {
     server_name www.unisuite.de;
     server_tokens off;
     proxy_hide_header X-Powered-By;
+    limit_req zone=default burst=20 nodelay;    
     
-    limit_req zone=default burst=20;
-    
-    add_header X-Frame-Options SAMEORIGIN;
-    add_header X-Content-Type-Options nosniff;
-    add_header X-XSS-Protection "1; mode=block";
-    
-    ssl_protocols TLSv1.2 TLSv1.3;
-    ssl_prefer_server_ciphers on;
-    ssl_ecdh_curve secp521r1:secp384r1;
-    ssl_ciphers EECDH+AESGCM:EECDH+AES256;
+    add_header Access-Control-Allow-Origin "https://*.unisuite.de";
+    include /etc/nginx/snippets/ssl_unisuite.conf;
     ssl_certificate /etc/letsencrypt/live/www.unisuite.de/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/www.unisuite.de/privkey.pem;
     
@@ -64,17 +54,9 @@ server {
     server_name api.unisuite.de;
     server_tokens off;
     proxy_hide_header X-Powered-By;
+    limit_req zone=restricted burst=5 nodelay;
     
-    limit_req zone=restricted burst=5;
-    
-    add_header X-Frame-Options SAMEORIGIN;
-    add_header X-Content-Type-Options nosniff;
-    add_header X-XSS-Protection "1; mode=block";
-    
-    ssl_protocols TLSv1.2 TLSv1.3;
-    ssl_prefer_server_ciphers on;
-    ssl_ecdh_curve secp521r1:secp384r1;
-    ssl_ciphers EECDH+AESGCM:EECDH+AES256;
+    include /etc/nginx/snippets/ssl_unisuite.conf;
     ssl_certificate /etc/letsencrypt/live/api.unisuite.de/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/api.unisuite.de/privkey.pem;
     
@@ -93,17 +75,10 @@ server {
     server_name app.unisuite.de;
     server_tokens off;
     proxy_hide_header X-Powered-By;
+    limit_req zone=default burst=20 nodelay;  
     
-    limit_req zone=default burst=20;
-    
-    add_header X-Frame-Options SAMEORIGIN;
-    add_header X-Content-Type-Options nosniff;
-    add_header X-XSS-Protection "1; mode=block";
-    
-    ssl_protocols TLSv1.2 TLSv1.3;
-    ssl_prefer_server_ciphers on;
-    ssl_ecdh_curve secp521r1:secp384r1;
-    ssl_ciphers EECDH+AESGCM:EECDH+AES256;
+    add_header Access-Control-Allow-Origin "https://*.unisuite.de";
+    include /etc/nginx/snippets/ssl_unisuite.conf;
     ssl_certificate /etc/letsencrypt/live/app.unisuite.de/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/app.unisuite.de/privkey.pem;
     
@@ -122,17 +97,10 @@ server {
     server_name auth.unisuite.de;
     server_tokens off;
     proxy_hide_header X-Powered-By;
+    limit_req zone=restricted burst=5 nodelay;
     
-    limit_req zone=default burst=20;
-    
-    add_header X-Frame-Options SAMEORIGIN;
-    add_header X-Content-Type-Options nosniff;
-    add_header X-XSS-Protection "1; mode=block";
-    
-    ssl_protocols TLSv1.2 TLSv1.3;
-    ssl_prefer_server_ciphers on;
-    ssl_ecdh_curve secp521r1:secp384r1;
-    ssl_ciphers EECDH+AESGCM:EECDH+AES256;
+    add_header Access-Control-Allow-Origin "https://*.unisuite.de";
+    include /etc/nginx/snippets/ssl_unisuite.conf;
     ssl_certificate /etc/letsencrypt/live/auth.unisuite.de/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/auth.unisuite.de/privkey.pem;
     
@@ -151,17 +119,10 @@ server {
     server_name community.unisuite.de;
     server_tokens off;
     proxy_hide_header X-Powered-By;
+    limit_req zone=default burst=20 nodelay;  
     
-    limit_req zone=default burst=20;
-    
-    add_header X-Frame-Options SAMEORIGIN;
-    add_header X-Content-Type-Options nosniff;
-    add_header X-XSS-Protection "1; mode=block";
-    
-    ssl_protocols TLSv1.2 TLSv1.3;
-    ssl_prefer_server_ciphers on;
-    ssl_ecdh_curve secp521r1:secp384r1;
-    ssl_ciphers EECDH+AESGCM:EECDH+AES256;
+    add_header Access-Control-Allow-Origin "https://*.unisuite.de";
+    include /etc/nginx/snippets/ssl_unisuite.conf;
     ssl_certificate /etc/letsencrypt/live/community.unisuite.de/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/community.unisuite.de/privkey.pem;
     
@@ -180,17 +141,10 @@ server {
     server_name developer.unisuite.de;
     server_tokens off;
     proxy_hide_header X-Powered-By;
+    limit_req zone=default burst=20 nodelay;  
     
-    limit_req zone=default burst=20;
-    
-    add_header X-Frame-Options SAMEORIGIN;
-    add_header X-Content-Type-Options nosniff;
-    add_header X-XSS-Protection "1; mode=block";
-    
-    ssl_protocols TLSv1.2 TLSv1.3;
-    ssl_prefer_server_ciphers on;
-    ssl_ecdh_curve secp521r1:secp384r1;
-    ssl_ciphers EECDH+AESGCM:EECDH+AES256;
+    add_header Access-Control-Allow-Origin "https://*.unisuite.de";
+    include /etc/nginx/snippets/ssl_unisuite.conf;
     ssl_certificate /etc/letsencrypt/live/developer.unisuite.de/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/developer.unisuite.de/privkey.pem;
     
@@ -209,17 +163,10 @@ server {
     server_name docs.unisuite.de;
     server_tokens off;
     proxy_hide_header X-Powered-By;
+    limit_req zone=default burst=20 nodelay;  
     
-    limit_req zone=default burst=20;
-    
-    add_header X-Frame-Options SAMEORIGIN;
-    add_header X-Content-Type-Options nosniff;
-    add_header X-XSS-Protection "1; mode=block";
-    
-    ssl_protocols TLSv1.2 TLSv1.3;
-    ssl_prefer_server_ciphers on;
-    ssl_ecdh_curve secp521r1:secp384r1;
-    ssl_ciphers EECDH+AESGCM:EECDH+AES256;
+    add_header Access-Control-Allow-Origin "https://*.unisuite.de";
+    include /etc/nginx/snippets/ssl_unisuite.conf;
     ssl_certificate /etc/letsencrypt/live/docs.unisuite.de/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/docs.unisuite.de/privkey.pem;
     
@@ -238,17 +185,11 @@ server {
     server_name help.unisuite.de;
     server_tokens off;
     proxy_hide_header X-Powered-By;
+    limit_req zone=default burst=20 nodelay;  
     
-    limit_req zone=default burst=20;
+    add_header Access-Control-Allow-Origin "https://*.unisuite.de";
     
-    add_header X-Frame-Options SAMEORIGIN;
-    add_header X-Content-Type-Options nosniff;
-    add_header X-XSS-Protection "1; mode=block";
-    
-    ssl_protocols TLSv1.2 TLSv1.3;
-    ssl_prefer_server_ciphers on;
-    ssl_ecdh_curve secp521r1:secp384r1;
-    ssl_ciphers EECDH+AESGCM:EECDH+AES256;
+    include /etc/nginx/snippets/ssl_unisuite.conf;
     ssl_certificate /etc/letsencrypt/live/help.unisuite.de/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/help.unisuite.de/privkey.pem;
     
@@ -267,17 +208,10 @@ server {
     server_name jobs.unisuite.de;
     server_tokens off;
     proxy_hide_header X-Powered-By;
+    limit_req zone=default burst=20 nodelay;  
     
-    limit_req zone=default burst=20;
-    
-    add_header X-Frame-Options SAMEORIGIN;
-    add_header X-Content-Type-Options nosniff;
-    add_header X-XSS-Protection "1; mode=block";
-    
-    ssl_protocols TLSv1.2 TLSv1.3;
-    ssl_prefer_server_ciphers on;
-    ssl_ecdh_curve secp521r1:secp384r1;
-    ssl_ciphers EECDH+AESGCM:EECDH+AES256;
+    add_header Access-Control-Allow-Origin "https://*.unisuite.de";
+    include /etc/nginx/snippets/ssl_unisuite.conf;
     ssl_certificate /etc/letsencrypt/live/jobs.unisuite.de/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/jobs.unisuite.de/privkey.pem;
     
@@ -296,17 +230,10 @@ server {
     server_name status.unisuite.de;
     server_tokens off;
     proxy_hide_header X-Powered-By;
+    limit_req zone=default burst=20 nodelay;  
     
-    limit_req zone=default burst=20;
-    
-    add_header X-Frame-Options SAMEORIGIN;
-    add_header X-Content-Type-Options nosniff;
-    add_header X-XSS-Protection "1; mode=block";
-    
-    ssl_protocols TLSv1.2 TLSv1.3;
-    ssl_prefer_server_ciphers on;
-    ssl_ecdh_curve secp521r1:secp384r1;
-    ssl_ciphers EECDH+AESGCM:EECDH+AES256;
+    add_header Access-Control-Allow-Origin "https://*.unisuite.de";
+    include /etc/nginx/snippets/ssl_unisuite.conf;
     ssl_certificate /etc/letsencrypt/live/status.unisuite.de/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/status.unisuite.de/privkey.pem;
     

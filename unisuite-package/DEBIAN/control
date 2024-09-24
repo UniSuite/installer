@@ -7,4 +7,4 @@ Priority: required
 Essential: yes
 Architecture: all
 Homepage: www.unisuite.de
-Depends: nodejs, npm, nginx, apache2, ufw, certbot
+Depends: nodejs, npm, nginx, apache2, ufw, certbot, fail2ban, unattended-upgrades, clamav, clamav-daemon
