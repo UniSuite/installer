@@ -127,6 +127,7 @@ rm /etc/apache2/ports.conf
 echo "Listen 127.0.0.1:8080" | tee /etc/apache2/ports.conf
 
 # SSL
+mkdir /var/www/certbot/
 certbot certonly --webroot -w /var/www/certbot -d "unisuite.de" --non-interactive --agree-tos --email lukaspoggemann@gmail.com
 certbot certonly --webroot -w /var/www/certbot -d "www.unisuite.de" --non-interactive --agree-tos --email lukaspoggemann@gmail.com
 certbot certonly --webroot -w /var/www/certbot -d "api.unisuite.de" --non-interactive --agree-tos --email lukaspoggemann@gmail.com
