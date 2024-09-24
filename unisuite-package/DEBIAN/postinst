@@ -86,6 +86,7 @@ fi
 # Permissions
 chown -R www-data:www-data /var/www/unisuite
 chmod -R 755 /var/www/unisuite
+mkdir -p /var/www/certbot/
 chown -R www-data:www-data /var/www/certbot
 chown -R www-data:www-data /var/unisuite-api
 
@@ -128,7 +129,6 @@ rm /etc/apache2/ports.conf
 echo "Listen 127.0.0.1:8080" | tee /etc/apache2/ports.conf
 
 # SSL
-mkdir -p /var/www/certbot/
 certbot certonly --webroot -w /var/www/certbot -d "unisuite.de" --non-interactive --agree-tos --email webmaster@unisuite.de
 certbot certonly --webroot -w /var/www/certbot -d "www.unisuite.de" --non-interactive --agree-tos --email webmaster@unisuite.de
 certbot certonly --webroot -w /var/www/certbot -d "api.unisuite.de" --non-interactive --agree-tos --email webmaster@unisuite.de
