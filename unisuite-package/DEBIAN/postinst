@@ -84,8 +84,8 @@ else
 fi
 
 # Permissions
-chown -R www-data:www-data /var/www/unisuite
-chmod -R 755 /var/www/unisuite
+chown -R www-data:www-data /var/www/
+chmod -R 755 /var/www/
 chown -R www-data:www-data /var/unisuite-api
 
 # Aktivieren der notwendigen Apache-Module
