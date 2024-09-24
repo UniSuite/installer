@@ -5,13 +5,9 @@ limit_req_status 429;
 # REDIRECT HTTPS
 server {
     listen 80;
-    server_name *.domain.test;
+    server_name unisuite.de *.unisuite.de;
     server_tokens off;
     proxy_hide_header X-Powered-By;
-
-    location /.well-known/acme-challenge/ {
-        root /var/www/certbot;
-    }
 
     location / {
         return 301 https://$host$request_uri;
