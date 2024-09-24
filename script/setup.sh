@@ -6,57 +6,18 @@
 
 ####################################### FUNCTIONS #######################################
 
-function configureHostname {
-    currentHN=$(hostname)
-    while true; do
-        newHN=$(whiptail --inputbox "Which hostname should the system use?\nCurrent: $currentHN" --nocancel --title "Hostname" --backtitle "UniSuite - Setup" 10 50 3>&1 1>&2 2>&3)
-        sudo hostnamectl set-hostname "$newHN"
-        whiptail --msgbox "The hostname has been set successfully to $newHN." --clear --ok-button "Continue" --title "Information" --backtitle "UniSuite - Setup" 10 50
-        break
-    done
-}
-
 function configureTimezone {
     currentTZ=$(timedatectl show --property=Timezone --value)
     while true; do
         newTZ=$(whiptail --inputbox "Which timezone should the system use?\nCurrent: $currentTZ" --nocancel --title "Timezone" --backtitle "UniSuite - Setup" 10 50 3>&1 1>&2 2>&3)
         if timedatectl list-timezones | grep -qx "$newTZ"; then
-            sudo timedatectl set-timezone "$newTZ"
+            timedatectl set-timezone "$newTZ"
             whiptail --msgbox "The timezone has been set successfully to $newTZ." --clear --ok-button "Continue" --title "Information" --backtitle "UniSuite - Setup" 10 50
             break
         else
             whiptail --msgbox "Invalid time zone selected! Please try again." --clear --ok-button "OK" --title "Error" --backtitle "UniSuite - Setup" 10 50
         fi
     done
-}
-
-function prepareInstallation {
-    msgs=("Creating folders (default)..."
-        "Creating folders (cron)..."
-        "Creating folders (systemd)..."
-        "Creating folders (logs)..."
-        "Creating folders (antiv logs)"
-        "Creating folders (antiv quarantine)..."
-    )
-    commands=("sudo mkdir /var/unisuite/"
-        "sudo mkdir /var/unisuite/cron/"
-        "sudo mkdir /var/unisuite/systemd/"
-        "sudo mkdir /var/log/unisuite/"
-        "sudo mkdir /var/log/unisuite/antiv/"
-        "sudo mkdir /var/antiv-quarantine/"
-    )
-    n=${#commands[@]}
-    i=0
-    while [ "$i" -lt "$n" ]; do
-        pct=$((i * 100 / n))
-        echo XXX
-        echo $i
-        echo "${msgs[i]}"
-        echo XXX
-        echo "$pct"
-        eval "${commands[i]}"
-        i=$((i + 1))
-    done | whiptail --gauge "Please wait..." --title "Preparing installation" --backtitle "UniSuite - Setup" 10 50 0
 }
 
 function systemUpdate {
@@ -66,9 +27,9 @@ function systemUpdate {
         "Removing unneeded packages..."
     )
     commands=("sudo apt-get update -y"
-        "sudo apt-get full-upgrade -y"
-        "sudo apt-get install sudo curl nano git ca-certificates apt-transport-https lsb-release gnupg -y"
-        "sudo apt-get autoremove -y"
+        "apt-get full-upgrade -y"
+        "apt-get install sudo curl nano git ca-certificates apt-transport-https lsb-release gnupg -y"
+        "apt-get autoremove -y"
     )
     n=${#commands[@]}
     i=0
@@ -86,18 +47,18 @@ function systemUpdate {
 
 function configureMOTD {
     if [ -f /etc/motd.original ]; then
-        sudo rm -f /etc/motd
-        sudo cp -v configs/motd.conf /etc/motd
+        rm -f /etc/motd
+        cp -v configs/motd.conf /etc/motd
     else
-        sudo mv -f /etc/motd /etc/motd.original
-        sudo cp -v configs/motd.conf /etc/motd
+        mv -f /etc/motd /etc/motd.original
+        cp -v configs/motd.conf /etc/motd
     fi
 
     msgs=("Removing old MOTD..."
         "Copying new MOTD..."
     )
-    commands=("sudo rm -f /etc/motd -y"
-        "sudo cp -v configs/motd.conf /etc/motd"
+    commands=("rm -f /etc/motd -y"
+        "cp -v configs/motd.conf /etc/motd"
     )
     n=${#commands[@]}
     i=0
@@ -113,54 +74,30 @@ function configureMOTD {
     done | whiptail --gauge "Please wait..." --title "MOTD" --backtitle "UniSuite - Setup" 10 50 0
 }
 
-function configureSecurity {
-    msgs=(
-        # ClamAV
-        "Installing antivirus..."
-        "Configuring antivirus db-updater..."
-        "Configuring antivirus autoscan..."
-        "Configuring unisuite-antiv..."
-        "Configuring unisuite-antiv..."
-        "Registering unisuite-antiv as cronjob..."
-        # UFW
-        "Installing firewall..."
-        "Configuring firewall..."
-        # fail2Ban
-        "Installing brute-force protection..."
-        "Configuring brute-force protection..."
-        # libpam-pwQuality
-        "Installing Password Quality Requirements..."
-        "Configuring Password Quality Requirements..."
-        # unattended-Upgrades
-        "Installing Unattended Upgrades..."
-        "Registering Unattended Upgrades..."
-        "Restarting Unattended Upgrades..."
-        # CleanUp
-        "Cleaning up..."
+function installUniSuite {
+    msgs=("Installing NodeJS..."
+        "Installing npm..."
+        "Installing nginx..."
+        "Installing apache2..."
+        "Installing UFW..."
+        "Installing Certbot..."
+        "Installing Fail2Ban..."
+        "Installing unattended-upgrades..."
+        "Installing ClamAV..."
+        "Installing ClamAV-Daemon..."
+        "Installing UniSuite..."
     )
-    commands=(
-        # ClamAV
-        "sudo apt-get install clamav clamav-daemon clamav-freshclam -y"
-        "sudo systemctl start clamav-freshclam"
-        "sudo systemctl start clamav-daemon"
-        "sudo cp -v scripts/antiv.sh /var/unisuite/cron/unisuite-antiv.sh"
-        "sudo chmod +x /var/unisuite/cron/unisuite-antiv.sh"
-        "echo '0 3 * * * /bin/bash /var/unisuite/cron/unisuite-antiv.sh' | crontab -"
-        # UFW
-        "sudo apt-get install ufw -y"
-        "sudo bash scripts/ufwRules.sh"
-        # fail2Ban
-        "sudo apt-get install fail2ban -y"
-        "sudo cp -v configs/fail2ban.conf /etc/fail2ban/jail.local"
-        # libpam-pwQuality
-        "sudo apt-get install libpam-pwquality -y"
-        "sudo sed -i -r -e 's/^(password\s+requisite\s+pam_pwquality.so)(.*)$/\1 retry=3 minlen=10 difok=3 ucredit=-1 lcredit=-1 dcredit=-1 ocredit=-1 maxrepeat=3 gecoschec/' /etc/pam.d/common-password"
-        # unattended-Upgrades
-        "sudo apt-get install unattended-upgrades -y"
-        "sudo systemctl enable unattended-upgrades"
-        "sudo systemctl restart unattended-upgrades"
-        # CleanUp
-        "sudo apt-get autoremove -y"
+    commands=("apt-get install nodejs -y"
+        "apt-get install npm -y"
+        "apt-get install nginx -y"
+        "apt-get install apache2 -y"
+        "apt-get install ufw -y"
+        "apt-get install certbot -y"
+        "apt-get install fail2ban -y"
+        "apt-get install unattended-upgrades -y"
+        "apt-get install clamav -y"
+        "apt-get install clamav-daemon -y"
+        "dpkg -i unisuite-package.deb"
     )
     n=${#commands[@]}
     i=0
@@ -173,27 +110,34 @@ function configureSecurity {
         echo "$pct"
         eval "${commands[i]}"
         i=$((i + 1))
-    done | whiptail --gauge "Please wait..." --title "Security" --backtitle "UniSuite - Setup" 10 50 0
+    done | whiptail --gauge "Please wait..." --title "Installing UniSuite" --backtitle "UniSuite - Setup" 10 50 0
 }
 
-function configureSMART {
-    msgs=(
-        "Installing smartmontools..."
-        "Copying unisuite-diskagent..."
-        "Configuring unisuite-diskagent..."
-        "Copying unisuite-diskagent service..."
-        "Reloading systemd daemon..."
-        "Configuring unisuite-diskagent service..."
-        "Starting unisuite-diskagent..."
+function removeUniSuite {
+    msgs=("Uninstalling UniSuite..."
+        "Removing NodeJS..."
+        "Removing npm..."
+        "Removing nginx..."
+        "Removing apache2..."
+        "Removing UFW..."
+        "Removing Certbot..."
+        "Removing Fail2Ban..."
+        "Removing unattended-upgrades..."
+        "Removing ClamAV..."
+        "Removing ClamAV-Daemon..."
+        "Removing UniSuite..."
     )
-    commands=(
-        "sudo apt-get install smartmontools -y"
-        "sudo cp -v scripts/diskagent.sh /var/unisuite/systemd/"
-        "sudo chmod +x /var/unisuite/systemd/unisuite-diskagent.sh"
-        "sudo cp -v configs/diskagent.service.conf /etc/systemd/system/unisuite-diskagent.service"
-        "sudo systemctl daemon-reload"
-        "sudo systemctl enable unisuite-diskagent.service"
-        "sudo systemctl start unisuite-diskagent.service"
+    commands=("apt-get purge unisuite -y"
+        "apt-get purge nodejs -y"
+        "apt-get purge npm -y"
+        "apt-get purge nginx -y"
+        "apt-get purge apache2 -y"
+        "apt-get purge ufw -y"
+        "apt-get purge certbot -y"
+        "apt-get purge fail2ban -y"
+        "apt-get purge unattended-upgrades -y"
+        "apt-get purge clamav -y"
+        "apt-get purge clamav-daemon -y"
     )
     n=${#commands[@]}
     i=0
@@ -206,7 +150,7 @@ function configureSMART {
         echo "$pct"
         eval "${commands[i]}"
         i=$((i + 1))
-    done | whiptail --gauge "Please wait..." --title "SMART DiskAgent" --backtitle "UniSuite - Setup" 10 50 0
+    done | whiptail --gauge "Please wait..." --title "Uninstalling UniSuite" --backtitle "UniSuite - Setup" 10 50 0
 }
 
 ####################################### MAIN MENU #######################################
@@ -218,10 +162,8 @@ function showMainMenu {
             whiptail --menu "Please choose what you want to do now" --clear --nocancel --title "Main Menu" --backtitle "UniSuite - Setup" 16 100 9 \
                 "1)" "System aktualisieren" \
                 "2)" "Zeitzone konfigurieren" \
-                "3)" "Firewall konfigurieren" \
-                "4)" "MOTD konfigurieren" \
-                "5)" "Automatics" \
-                "6)" "Exit Utility" 3>&2 2>&1 1>&3
+                "3)" "UniSuite deinstallieren" \
+                "4)" "Exit Utility" 3>&2 2>&1 1>&3
         )
 
         case $CHOICE in
@@ -232,15 +174,9 @@ function showMainMenu {
             configureTimezone
             ;;
         "3)")
-            configureSecurity
+            removeUniSuite
             ;;
         "4)")
-            configureMOTD
-            ;;
-        "5)")
-            registerAutomatics
-            ;;
-        "6)")
             exit 0
             ;;
         esac
@@ -252,8 +188,6 @@ function showMainMenu {
 ####################################### INSTALLER #######################################
 
 function showInstaller {
-    type=""
-
     if ! whiptail --yesno "This program will install UniSuite on your server. Do you want to continue?" --clear --title "Information" --backtitle "UniSuite - Setup" 10 50; then
         clear
         exit 0
@@ -264,19 +198,11 @@ function showInstaller {
         exit 1
     fi
 
-    #Ask other details (domain / hostname, location, time)
-    whiptail --msgbox "Please answer the following questions to start the installation" --title "Information" --backtitle "UniSuite - Setup" 12 75
-    configureHostname
+    #Timezone 
     configureTimezone
 
-    #Ask what to install (checkbox)
-    #  Master: Fileserver for cluster, ntp server, ?
-    #  Worker: ?
-    if whiptail --yesno "Please choose what you want to install:\n\nMaster:\nAs the master, the server controls the cluster. It distributes the tasks to the workers and only takes on important tasks itself.\n\nWorker:\nAs a worker, the server performs the tasks in the cluster that it is assigned by the cluster master. If a worker fails, another one takes over." --clear --yes-button "Master" --no-button "Worker" --defaultno --title "Type of installation" --backtitle "UniSuite - Setup" 25 75; then
-        type="MASTER"
-    else
-        type="WORKER"
-    fi
+    hostnamectl set-hostname "unisuite.de"
+    configureMOTD
 
     #Ask if really want to install (yes/no)
     if ! whiptail --yesno "The required information has been provided. Thank you!\n\nDo you really want to install UniSuite 2.0 now?\nThe installation can not be reverted!" --yes-button "Install" --no-button "Abort" --clear --title "Last Warning" --backtitle "UniSuite - Setup" 10 50; then
@@ -285,11 +211,8 @@ function showInstaller {
     fi
 
     #Install by calling each step
-    prepareInstallation
     systemUpdate
-    configureMOTD
-    configureSMART
-    configureSecurity
+    installUniSuite
 }
 
 ####################################### START UP #######################################
