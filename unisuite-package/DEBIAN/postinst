@@ -127,17 +127,17 @@ rm /etc/apache2/ports.conf
 echo "Listen 127.0.0.1:8080" | tee /etc/apache2/ports.conf
 
 # SSL
-certbot certonly --webroot -w /var/www/unisuite/landing -d "unisuite.de" --non-interactive --agree-tos --email lukaspoggemann@gmail.com
-certbot certonly --webroot -w /var/www/unisuite/landing -d "www.unisuite.de" --non-interactive --agree-tos --email lukaspoggemann@gmail.com
-certbot certonly --webroot -w /var/www/unisuite/landing -d "api.unisuite.de" --non-interactive --agree-tos --email lukaspoggemann@gmail.com
-certbot certonly --webroot -w /var/www/unisuite/app -d "app.unisuite.de" --non-interactive --agree-tos --email lukaspoggemann@gmail.com
-certbot certonly --webroot -w /var/www/unisuite/auth -d "auth.unisuite.de" --non-interactive --agree-tos --email lukaspoggemann@gmail.com
-certbot certonly --webroot -w /var/www/unisuite/community -d "community.unisuite.de" --non-interactive --agree-tos --email lukaspoggemann@gmail.com
-certbot certonly --webroot -w /var/www/unisuite/developer -d "developer.unisuite.de" --non-interactive --agree-tos --email lukaspoggemann@gmail.com
-certbot certonly --webroot -w /var/www/unisuite/docs -d "docs.unisuite.de" --non-interactive --agree-tos --email lukaspoggemann@gmail.com
-certbot certonly --webroot -w /var/www/unisuite/help -d "help.unisuite.de" --non-interactive --agree-tos --email lukaspoggemann@gmail.com
-certbot certonly --webroot -w /var/www/unisuite/jobs -d "jobs.unisuite.de" --non-interactive --agree-tos --email lukaspoggemann@gmail.com
-certbot certonly --webroot -w /var/www/unisuite/status -d "status.unisuite.de" --non-interactive --agree-tos --email lukaspoggemann@gmail.com
+certbot certonly --webroot -w /var/www/certbot -d "unisuite.de" --non-interactive --agree-tos --email lukaspoggemann@gmail.com
+certbot certonly --webroot -w /var/www/certbot -d "www.unisuite.de" --non-interactive --agree-tos --email lukaspoggemann@gmail.com
+certbot certonly --webroot -w /var/www/certbot -d "api.unisuite.de" --non-interactive --agree-tos --email lukaspoggemann@gmail.com
+certbot certonly --webroot -w /var/www/certbot -d "app.unisuite.de" --non-interactive --agree-tos --email lukaspoggemann@gmail.com
+certbot certonly --webroot -w /var/www/certbot -d "auth.unisuite.de" --non-interactive --agree-tos --email lukaspoggemann@gmail.com
+certbot certonly --webroot -w /var/www/certbot -d "community.unisuite.de" --non-interactive --agree-tos --email lukaspoggemann@gmail.com
+certbot certonly --webroot -w /var/www/certbot -d "developer.unisuite.de" --non-interactive --agree-tos --email lukaspoggemann@gmail.com
+certbot certonly --webroot -w /var/www/certbot -d "docs.unisuite.de" --non-interactive --agree-tos --email lukaspoggemann@gmail.com
+certbot certonly --webroot -w /var/www/certbot -d "help.unisuite.de" --non-interactive --agree-tos --email lukaspoggemann@gmail.com
+certbot certonly --webroot -w /var/www/certbot -d "jobs.unisuite.de" --non-interactive --agree-tos --email lukaspoggemann@gmail.com
+certbot certonly --webroot -w /var/www/certbot -d "status.unisuite.de" --non-interactive --agree-tos --email lukaspoggemann@gmail.com
 echo "0 3 * * * /usr/bin/certbot renew --quiet --post-hook 'systemctl reload nginx'" | crontab -
 
 # NGINX neu starten
