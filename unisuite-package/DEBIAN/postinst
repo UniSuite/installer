@@ -145,7 +145,7 @@ else
 fi
 
 # SSL
-mkdir /var/www/certbot
+mkdir -p /var/www/certbot
 certbot certonly --webroot -w /var/www/certbot -d "unisuite.de" --non-interactive --agree-tos --email webmaster@unisuite.de
 certbot certonly --webroot -w /var/www/certbot -d "www.unisuite.de" --non-interactive --agree-tos --email webmaster@unisuite.de
 certbot certonly --webroot -w /var/www/certbot -d "api.unisuite.de" --non-interactive --agree-tos --email webmaster@unisuite.de
