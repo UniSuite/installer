@@ -126,6 +126,23 @@ fi
 rm /etc/apache2/ports.conf
 echo "Listen 127.0.0.1:8080" | tee /etc/apache2/ports.conf
 
+# Apache: Server-Tokens und Server-Signatur deaktivieren
+APACHE_CONF="/etc/apache2/conf-enabled/security.conf"  # Ändere den Pfad, falls notwendig
+if [ -f "$APACHE_CONF" ]; then
+    echo "Deaktiviere Server-Tokens und Server-Signatur in Apache..."
+    if ! grep -q "ServerTokens Prod" "$APACHE_CONF"; then
+        echo "ServerTokens Prod" >> "$APACHE_CONF"
+    fi
+    if ! grep -q "ServerSignature Off" "$APACHE_CONF"; then
+        echo "ServerSignature Off" >> "$APACHE_CONF"
+    fi
+    systemctl restart apache2  # Für Debian/Ubuntu
+    # systemctl restart httpd  # Für CentOS/RHEL, falls nötig
+    echo "Apache neu gestartet."
+else
+    echo "Apache Konfigurationsdatei nicht gefunden!"
+fi
+
 # NGINX neu starten
 if systemctl is-active --quiet nginx; then
   echo "NGINX wird neu gestartet..."
@@ -204,7 +221,6 @@ ufw default deny incoming
 ufw default allow outgoing
 ufw allow 80/tcp
 ufw allow 443/tcp
-ufw allow 1505/tcp
 ufw allow 22/tcp
 ufw allow 21/tcp
 ufw logging on
