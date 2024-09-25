@@ -8,6 +8,7 @@ server {
     server_name unisuite.de *.unisuite.de;
     server_tokens off;
     proxy_hide_header X-Powered-By;
+    proxy_hide_header Server;
     
     location /.well-known/acme-challenge/ {
         root /var/www/certbot;
@@ -22,6 +23,7 @@ server {
 server {
     listen 443 ssl;
     server_name unisuite.de;
+    server_tokens off;
     
     include /etc/nginx/snippets/ssl_unisuite.conf;
     ssl_certificate /etc/letsencrypt/live/unisuite.de/fullchain.pem;
@@ -36,6 +38,7 @@ server {
     server_name www.unisuite.de;
     server_tokens off;
     proxy_hide_header X-Powered-By;
+    proxy_hide_header Server;
     limit_req zone=default burst=20 nodelay;    
     
     add_header Access-Control-Allow-Origin "https://*.unisuite.de";
@@ -58,6 +61,7 @@ server {
     server_name api.unisuite.de;
     server_tokens off;
     proxy_hide_header X-Powered-By;
+    proxy_hide_header Server;
     limit_req zone=restricted burst=5 nodelay;
     
     include /etc/nginx/snippets/ssl_unisuite.conf;
@@ -79,6 +83,7 @@ server {
     server_name app.unisuite.de;
     server_tokens off;
     proxy_hide_header X-Powered-By;
+    proxy_hide_header Server;
     limit_req zone=default burst=20 nodelay;  
     
     add_header Access-Control-Allow-Origin "https://*.unisuite.de";
@@ -101,6 +106,7 @@ server {
     server_name auth.unisuite.de;
     server_tokens off;
     proxy_hide_header X-Powered-By;
+    proxy_hide_header Server;
     limit_req zone=restricted burst=5 nodelay;
     
     add_header Access-Control-Allow-Origin "https://*.unisuite.de";
@@ -123,6 +129,7 @@ server {
     server_name community.unisuite.de;
     server_tokens off;
     proxy_hide_header X-Powered-By;
+    proxy_hide_header Server;
     limit_req zone=default burst=20 nodelay;  
     
     add_header Access-Control-Allow-Origin "https://*.unisuite.de";
@@ -145,6 +152,7 @@ server {
     server_name developer.unisuite.de;
     server_tokens off;
     proxy_hide_header X-Powered-By;
+    proxy_hide_header Server;
     limit_req zone=default burst=20 nodelay;  
     
     add_header Access-Control-Allow-Origin "https://*.unisuite.de";
@@ -167,6 +175,7 @@ server {
     server_name docs.unisuite.de;
     server_tokens off;
     proxy_hide_header X-Powered-By;
+    proxy_hide_header Server;
     limit_req zone=default burst=20 nodelay;  
     
     add_header Access-Control-Allow-Origin "https://*.unisuite.de";
@@ -189,6 +198,7 @@ server {
     server_name help.unisuite.de;
     server_tokens off;
     proxy_hide_header X-Powered-By;
+    proxy_hide_header Server;
     limit_req zone=default burst=20 nodelay;  
     
     add_header Access-Control-Allow-Origin "https://*.unisuite.de";
@@ -212,6 +222,7 @@ server {
     server_name jobs.unisuite.de;
     server_tokens off;
     proxy_hide_header X-Powered-By;
+    proxy_hide_header Server;
     limit_req zone=default burst=20 nodelay;  
     
     add_header Access-Control-Allow-Origin "https://*.unisuite.de";
@@ -234,6 +245,8 @@ server {
     server_name status.unisuite.de;
     server_tokens off;
     proxy_hide_header X-Powered-By;
+    proxy_hide_header Server;
+    proxy_hide_header Server;
     limit_req zone=default burst=20 nodelay;  
     
     add_header Access-Control-Allow-Origin "https://*.unisuite.de";
