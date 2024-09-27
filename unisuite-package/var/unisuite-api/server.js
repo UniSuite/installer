@@ -1,5 +1,4 @@
 const logger = require("morgan");
-const cors = require("cors");
 const http = require("http");
 const express = require("express");
 const errorHandler = require("errorhandler");
@@ -13,7 +12,6 @@ dotenv.config();
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(cors());
 app.use(helmet());
 
 app.use(function (err, req, res, next) {
