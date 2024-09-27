@@ -23,6 +23,7 @@ server {
     server_name unisuite.de;
     
     include /etc/nginx/snippets/security_unisuite.conf;
+    add_header Access-Control-Allow-Origin "https://unisuite.de";
     ssl_certificate /etc/letsencrypt/live/unisuite.de/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/unisuite.de/privkey.pem;
 
@@ -36,6 +37,7 @@ server {
     limit_req zone=default burst=20 nodelay;    
     
     include /etc/nginx/snippets/security_unisuite.conf;
+    add_header Access-Control-Allow-Origin "https://unisuite.de";
     ssl_certificate /etc/letsencrypt/live/www.unisuite.de/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/www.unisuite.de/privkey.pem;
     
@@ -74,6 +76,7 @@ server {
     limit_req zone=default burst=20 nodelay;  
     
     include /etc/nginx/snippets/security_unisuite.conf;
+    add_header Access-Control-Allow-Origin "https://unisuite.de";
     ssl_certificate /etc/letsencrypt/live/app.unisuite.de/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/app.unisuite.de/privkey.pem;
     
@@ -93,6 +96,7 @@ server {
     limit_req zone=restricted burst=5 nodelay;
     
     include /etc/nginx/snippets/security_unisuite.conf;
+    add_header Access-Control-Allow-Origin "https://unisuite.de";
     ssl_certificate /etc/letsencrypt/live/auth.unisuite.de/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/auth.unisuite.de/privkey.pem;
     
@@ -112,6 +116,7 @@ server {
     limit_req zone=default burst=20 nodelay;  
     
     include /etc/nginx/snippets/security_unisuite.conf;
+    add_header Access-Control-Allow-Origin "https://unisuite.de";
     ssl_certificate /etc/letsencrypt/live/community.unisuite.de/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/community.unisuite.de/privkey.pem;
     
@@ -131,6 +136,7 @@ server {
     limit_req zone=default burst=20 nodelay;  
     
     include /etc/nginx/snippets/security_unisuite.conf;
+    add_header Access-Control-Allow-Origin "https://unisuite.de";
     ssl_certificate /etc/letsencrypt/live/developer.unisuite.de/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/developer.unisuite.de/privkey.pem;
     
@@ -150,6 +156,7 @@ server {
     limit_req zone=default burst=20 nodelay;  
     
     include /etc/nginx/snippets/security_unisuite.conf;
+    add_header Access-Control-Allow-Origin "https://unisuite.de";
     ssl_certificate /etc/letsencrypt/live/docs.unisuite.de/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/docs.unisuite.de/privkey.pem;
     
@@ -169,6 +176,7 @@ server {
     limit_req zone=default burst=20 nodelay;  
         
     include /etc/nginx/snippets/security_unisuite.conf;
+    add_header Access-Control-Allow-Origin "https://unisuite.de";
     ssl_certificate /etc/letsencrypt/live/help.unisuite.de/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/help.unisuite.de/privkey.pem;
     
@@ -188,6 +196,7 @@ server {
     limit_req zone=default burst=20 nodelay;  
     
     include /etc/nginx/snippets/security_unisuite.conf;
+    add_header Access-Control-Allow-Origin "https://unisuite.de";
     ssl_certificate /etc/letsencrypt/live/jobs.unisuite.de/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/jobs.unisuite.de/privkey.pem;
     
@@ -207,6 +216,7 @@ server {
     limit_req zone=default burst=20 nodelay;  
     
     include /etc/nginx/snippets/security_unisuite.conf;
+    add_header Access-Control-Allow-Origin "https://unisuite.de";
     ssl_certificate /etc/letsencrypt/live/status.unisuite.de/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/status.unisuite.de/privkey.pem;
     
