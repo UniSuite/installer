@@ -1,2 +1,3 @@
+// (c) Copyright UniSuite - All Rights Reserved
 APT::Periodic::Update-Package-Lists "1"; // Täglich die Paketlisten aktualisieren
 APT::Periodic::Unattended-Upgrade "1";   // Täglich unbeaufsichtigte Upgrades durchführen

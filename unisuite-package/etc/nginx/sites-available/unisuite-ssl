@@ -1,3 +1,5 @@
+# (c) Copyright UniSuite - All Rights Reserved
+
 server {
     listen 80;
     server_name unisuite.de *.unisuite.de;
