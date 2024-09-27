@@ -10,10 +10,6 @@ server {
     proxy_hide_header X-Powered-By;
     proxy_hide_header Server;
     
-    location /.well-known/acme-challenge/ {
-        root /var/www/certbot;
-    }
-    
     location / {
         return 301 https://$host$request_uri;
     }
