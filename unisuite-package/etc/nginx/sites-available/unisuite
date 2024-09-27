@@ -21,9 +21,8 @@ server {
 server {
     listen 443 ssl;
     server_name unisuite.de;
-    server_tokens off;
     
-    include /etc/nginx/snippets/ssl_unisuite.conf;
+    include /etc/nginx/snippets/security_unisuite.conf;
     ssl_certificate /etc/letsencrypt/live/unisuite.de/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/unisuite.de/privkey.pem;
 
@@ -34,13 +33,9 @@ server {
 server {
     listen 443 ssl;
     server_name www.unisuite.de;
-    server_tokens off;
-    proxy_hide_header X-Powered-By;
-    proxy_hide_header Server;
     limit_req zone=default burst=20 nodelay;    
     
-    add_header Access-Control-Allow-Origin "https://*.unisuite.de";
-    include /etc/nginx/snippets/ssl_unisuite.conf;
+    include /etc/nginx/snippets/security_unisuite.conf;
     ssl_certificate /etc/letsencrypt/live/www.unisuite.de/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/www.unisuite.de/privkey.pem;
     
@@ -57,12 +52,9 @@ server {
 server {
     listen 443 ssl;
     server_name api.unisuite.de;
-    server_tokens off;
-    proxy_hide_header X-Powered-By;
-    proxy_hide_header Server;
     limit_req zone=restricted burst=5 nodelay;
     
-    include /etc/nginx/snippets/ssl_unisuite.conf;
+    include /etc/nginx/snippets/security_unisuite.conf;
     ssl_certificate /etc/letsencrypt/live/api.unisuite.de/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/api.unisuite.de/privkey.pem;
     
@@ -79,13 +71,9 @@ server {
 server {
     listen 443 ssl;
     server_name app.unisuite.de;
-    server_tokens off;
-    proxy_hide_header X-Powered-By;
-    proxy_hide_header Server;
     limit_req zone=default burst=20 nodelay;  
     
-    add_header Access-Control-Allow-Origin "https://*.unisuite.de";
-    include /etc/nginx/snippets/ssl_unisuite.conf;
+    include /etc/nginx/snippets/security_unisuite.conf;
     ssl_certificate /etc/letsencrypt/live/app.unisuite.de/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/app.unisuite.de/privkey.pem;
     
@@ -102,13 +90,9 @@ server {
 server {
     listen 443 ssl;
     server_name auth.unisuite.de;
-    server_tokens off;
-    proxy_hide_header X-Powered-By;
-    proxy_hide_header Server;
     limit_req zone=restricted burst=5 nodelay;
     
-    add_header Access-Control-Allow-Origin "https://*.unisuite.de";
-    include /etc/nginx/snippets/ssl_unisuite.conf;
+    include /etc/nginx/snippets/security_unisuite.conf;
     ssl_certificate /etc/letsencrypt/live/auth.unisuite.de/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/auth.unisuite.de/privkey.pem;
     
@@ -125,13 +109,9 @@ server {
 server {
     listen 443 ssl;
     server_name community.unisuite.de;
-    server_tokens off;
-    proxy_hide_header X-Powered-By;
-    proxy_hide_header Server;
     limit_req zone=default burst=20 nodelay;  
     
-    add_header Access-Control-Allow-Origin "https://*.unisuite.de";
-    include /etc/nginx/snippets/ssl_unisuite.conf;
+    include /etc/nginx/snippets/security_unisuite.conf;
     ssl_certificate /etc/letsencrypt/live/community.unisuite.de/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/community.unisuite.de/privkey.pem;
     
@@ -148,13 +128,9 @@ server {
 server {
     listen 443 ssl;
     server_name developer.unisuite.de;
-    server_tokens off;
-    proxy_hide_header X-Powered-By;
-    proxy_hide_header Server;
     limit_req zone=default burst=20 nodelay;  
     
-    add_header Access-Control-Allow-Origin "https://*.unisuite.de";
-    include /etc/nginx/snippets/ssl_unisuite.conf;
+    include /etc/nginx/snippets/security_unisuite.conf;
     ssl_certificate /etc/letsencrypt/live/developer.unisuite.de/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/developer.unisuite.de/privkey.pem;
     
@@ -171,13 +147,9 @@ server {
 server {
     listen 443 ssl;
     server_name docs.unisuite.de;
-    server_tokens off;
-    proxy_hide_header X-Powered-By;
-    proxy_hide_header Server;
     limit_req zone=default burst=20 nodelay;  
     
-    add_header Access-Control-Allow-Origin "https://*.unisuite.de";
-    include /etc/nginx/snippets/ssl_unisuite.conf;
+    include /etc/nginx/snippets/security_unisuite.conf;
     ssl_certificate /etc/letsencrypt/live/docs.unisuite.de/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/docs.unisuite.de/privkey.pem;
     
@@ -194,14 +166,9 @@ server {
 server {
     listen 443 ssl;
     server_name help.unisuite.de;
-    server_tokens off;
-    proxy_hide_header X-Powered-By;
-    proxy_hide_header Server;
     limit_req zone=default burst=20 nodelay;  
-    
-    add_header Access-Control-Allow-Origin "https://*.unisuite.de";
-    
-    include /etc/nginx/snippets/ssl_unisuite.conf;
+        
+    include /etc/nginx/snippets/security_unisuite.conf;
     ssl_certificate /etc/letsencrypt/live/help.unisuite.de/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/help.unisuite.de/privkey.pem;
     
@@ -218,13 +185,9 @@ server {
 server {
     listen 443 ssl;
     server_name jobs.unisuite.de;
-    server_tokens off;
-    proxy_hide_header X-Powered-By;
-    proxy_hide_header Server;
     limit_req zone=default burst=20 nodelay;  
     
-    add_header Access-Control-Allow-Origin "https://*.unisuite.de";
-    include /etc/nginx/snippets/ssl_unisuite.conf;
+    include /etc/nginx/snippets/security_unisuite.conf;
     ssl_certificate /etc/letsencrypt/live/jobs.unisuite.de/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/jobs.unisuite.de/privkey.pem;
     
@@ -241,14 +204,9 @@ server {
 server {
     listen 443 ssl;
     server_name status.unisuite.de;
-    server_tokens off;
-    proxy_hide_header X-Powered-By;
-    proxy_hide_header Server;
-    proxy_hide_header Server;
     limit_req zone=default burst=20 nodelay;  
     
-    add_header Access-Control-Allow-Origin "https://*.unisuite.de";
-    include /etc/nginx/snippets/ssl_unisuite.conf;
+    include /etc/nginx/snippets/security_unisuite.conf;
     ssl_certificate /etc/letsencrypt/live/status.unisuite.de/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/status.unisuite.de/privkey.pem;
     
