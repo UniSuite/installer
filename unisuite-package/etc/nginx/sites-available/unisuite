@@ -1,7 +1,7 @@
 # (c) Copyright UniSuite - All Rights Reserved
 
-limit_req_zone $binary_remote_addr zone=default:20m rate=10r/s;
-limit_req_zone $binary_remote_addr zone=restricted:20m rate=5r/s;
+limit_req_zone $binary_remote_addr zone=default:20m rate=30r/s;
+limit_req_zone $binary_remote_addr zone=restricted:20m rate=20r/s;
 limit_req_status 429;
 
 # REDIRECT HTTPS
